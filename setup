@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+root_dir="$(dirname "${BASH_SOURCE[0]}")"
+install_dir="$root_dir/installs"
+
+package_dir="$install_dir/packages"
+pkg_config_dir="$package_dir/configs"
+# installs=`find $root_dir/installs -mindepth 1 -maxdepth 1 -executable`
+
+log() {
+    echo "$1"
+}
+
+copy() {
+    log "removing $2"
+    rm $2
+
+    log "copying: $1"
+    cp $1 $2
+}
+
+
+if [[ "$1" == "upgrade" ]]; then
+    sudo apt -y update && sudo apt -y upgrade
+fi
+
+if [[ "$1" == "base" ]]; then
+    # base packages
+   sudo apt -y install luarocks ca-certificates wget unzip curl ninja-build gettext cmake build-essential git   
+  command -v gum >/dev/null 2>&1 || "$install_dir/gum"
+fi
+
+
+if [[ "$1" == "packages" ]]; then
+
+    mapfile -t packages < <(grep -vE '^\s*$|^#' "$install_dir/packages.txt")
+
+    mapfile -t pkgs_choices < <(gum choose --no-limit "${packages[@]}")
+
+    if [[ ${#pkgs_choices[@]} -gt 0 ]]; then
+        for pkg in "${pkgs_choices[@]}"; do
+            log "Installing: $pkg";
+
+            "$package_dir/$pkg"
+
+            if [[ $pkg == "zsh" ]]; then
+                copy "$pkg_config_dir/.zshrc" "$HOME/.zshrc"
+                copy "$pkg_config_dir/.zsh_profile" "$HOME/.zsh_profile"
+            fi
+
+            if [[ $pkg == "neovim" ]]; then
+                cp -rf "$pkg_config_dir/nvim" $HOME/.config/
+            fi
+
+             if [[ "$pkg" != "neovim" ]] && [[ -d "$pkg_config_dir/$pkg" ]]; then
+                cp -rf "$pkg_config_dir/$pkg" $HOME/.config/
+            fi
+        done
+    fi
+fi
+
+
+if [[ "$1" == "configs" ]]; then
+    mapfile -t config_packages < <(grep -vE '^\s*$|^#' "$install_dir/packages.txt")
+    mapfile -t config_choices < <(gum choose --no-limit "${config_packages[@]}")
+
+    if [[ ${#config_choices[@]} -gt 0 ]]; then
+        for config in "${config_choices[@]}"; do
+            log "Copying: $config";
+
+            if [[ $config == "zsh" ]]; then
+                copy "$pkg_config_dir/.zshrc" "$HOME/.zshrc"
+                copy "$pkg_config_dir/.zsh_profile" "$HOME/.zsh_profile" 
+            fi
+
+            if [[ $config == "neovim" ]]; then
+                cp -rf "$pkg_config_dir/nvim" $HOME/.config/
+            fi
+
+            if [ $config != "neovim" ] && [ -d "$pkg_config_dir/$config" ]; then
+                cp -rf "$pkg_config_dir/$config" $HOME/.config/
+
+                if [ $config == 'i3' ]; then
+                    cp -rf "$pkg_config_dir/i3status" $HOME/.config/
+                fi
+            fi
+        done
+    fi
+fi
+
+# echo $1

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+
+# 1. Import Microsoft GPG key
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/
+
+# 2. Add the repo
+echo "deb [arch=amd64] https://packages.microsoft.com/repos/code stable main" | \
+  sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+
+# 3. Install
+sudo apt update
+sudo apt install code -y

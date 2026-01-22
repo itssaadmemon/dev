@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if [ ! -d $HOME/neovim ]; then
+    git clone https://github.com/neovim/neovim.git $HOME/neovim
+fi
+
+git -C ~/neovim fetch --all
+git -C ~/neovim checkout stable
+
+make -C ~/neovim clean
+make -C ~/neovim CMAKE_BUILD_TYPE=RelWithDebInfo
+sudo make -C ~/neovim install
+
+if command -v nvim >/dev/null 2>&1; then
+    echo "removing neovim clone folder"
+    sudo rm -r $HOME/neovim
+fi
