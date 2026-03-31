@@ -27,6 +27,7 @@ return {
     config = function()
       local cmp = require('cmp')
       local cmp_lsp = require("cmp_nvim_lsp")
+      local elixir_ls_server = vim.fn.expand("~/elixir-ls/language_server.sh")
       local capabilities = vim.tbl_deep_extend(
         "force",
         {},
@@ -59,6 +60,11 @@ return {
       --   root_markers = { 'mix.exs', '.git' },
       --   filetypes = { 'elixir', 'eelixir', 'heex' },
       -- })
+
+      vim.lsp.enable('elixirls')
+      vim.lsp.config('elixirls', {
+        cmd = { elixir_ls_server },
+      })
 
       vim.lsp.enable('ts_ls')
       vim.lsp.config("ts_ls", {
