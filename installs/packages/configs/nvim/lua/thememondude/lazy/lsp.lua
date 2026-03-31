@@ -5,8 +5,8 @@ return {
   {
     "mason-org/mason-lspconfig.nvim",
     dependencies = {
-        { "mason-org/mason.nvim", opts = {} },
-        "neovim/nvim-lspconfig",
+      { "mason-org/mason.nvim", opts = {} },
+      "neovim/nvim-lspconfig",
     },
   },
   {
@@ -53,7 +53,12 @@ return {
         filetypes = { "css", "html", "javascript", "javascriptreact", "sass", "scss", "typescriptreact", "eex", "heex", "html-eex", "elixir", "svelte" },
       })
 
-      -- vim.lsp.enable('elixir-ls')
+      -- vim.lsp.enable "expert"
+      -- vim.lsp.config('expert', {
+      --   cmd = { 'expert', '--stdio' },
+      --   root_markers = { 'mix.exs', '.git' },
+      --   filetypes = { 'elixir', 'eelixir', 'heex' },
+      -- })
 
       vim.lsp.enable('ts_ls')
       vim.lsp.config("ts_ls", {

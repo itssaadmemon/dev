@@ -16,6 +16,7 @@ alias gb="git branch"
 alias gco="git checkout"
 
 alias doc="docker"
+alias lzd='lazydocker'
 
 alias livebook="cd ~/livebook && MIX_ENV=prod mix phx.server"
 # alias cursor="/opt/cursor.appimage"
