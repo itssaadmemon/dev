@@ -27,7 +27,7 @@ return {
     config = function()
       local cmp = require('cmp')
       local cmp_lsp = require("cmp_nvim_lsp")
-      local elixir_ls_server = vim.fn.expand("~/elixir-ls/language_server.sh")
+      -- local elixir_ls_server = vim.fn.expand("~/elixir-ls/language_server.sh")
       local capabilities = vim.tbl_deep_extend(
         "force",
         {},
@@ -54,17 +54,25 @@ return {
         filetypes = { "css", "html", "javascript", "javascriptreact", "sass", "scss", "typescriptreact", "eex", "heex", "html-eex", "elixir", "svelte" },
       })
 
-      -- vim.lsp.enable "expert"
-      -- vim.lsp.config('expert', {
-      --   cmd = { 'expert', '--stdio' },
-      --   root_markers = { 'mix.exs', '.git' },
-      --   filetypes = { 'elixir', 'eelixir', 'heex' },
-      -- })
-
-      vim.lsp.enable('elixirls')
-      vim.lsp.config('elixirls', {
-        cmd = { elixir_ls_server },
+      vim.lsp.config('expert', {
+        cmd = { 'expert', '--stdio' },
+        root_markers = { 'mix.exs', '.git' },
+        filetypes = { 'elixir', 'eelixir', 'heex' },
       })
+
+      vim.lsp.enable 'expert'
+
+      -- vim.lsp.enable('elixirls')
+      -- vim.lsp.config('elixirls', {
+      --   cmd = { elixir_ls_server },
+      --   settings = {
+      --     elixirls = {
+      --       mixEnv = "dev",
+      --       dialyzerEnabled = false,
+      --       fetchDeps = false
+      --     }
+      --   }
+      -- })
 
       vim.lsp.enable('ts_ls')
       vim.lsp.config("ts_ls", {
