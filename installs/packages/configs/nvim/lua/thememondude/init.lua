@@ -11,23 +11,23 @@ local autocmd = vim.api.nvim_create_autocmd
 autocmd('LspAttach', {
   group = LocalGroup,
   callback = function(e)
-    local opts = { buffer = e.buf }
-    vim.keymap.set("n", "<leader>gd", function() vim.lsp.buf.definition() end, opts)
-    vim.keymap.set("n", "<leader>h", function() vim.lsp.buf.hover() end, opts)
-    vim.keymap.set("n", "<leader>ws", function() vim.lsp.buf.workspace_symbol() end, opts)
-    vim.keymap.set("n", "<leader>d", function() vim.diagnostic.open_float() end, opts)
-    vim.keymap.set("n", "<leader>dn", function() vim.diagnostic.goto_next() end, opts)
-    vim.keymap.set("n", "<leader>dN", function() vim.diagnostic.goto_prev() end, opts)
-    vim.keymap.set("n", "<leader>ca", function() vim.lsp.buf.code_action() end, opts)
-    vim.keymap.set("n", "<leader>rr", function() vim.lsp.buf.references() end, opts)
-    vim.keymap.set("n", "<leader>rn", function() vim.lsp.buf.rename() end, opts)
-    vim.keymap.set("i", "<leader><C-h>", function() vim.lsp.buf.signature_help() end, opts)
+    local function map(mode, lhs, rhs, desc)
+      vim.keymap.set(mode, lhs, rhs, {
+        buffer = e.buf,
+        desc = desc,
+      })
+    end
+    map("n", "<leader>gd", vim.lsp.buf.definition, "Goto definition")
+    map("n", "<leader>h", vim.lsp.buf.hover, "Hover")
+    map("n", "<leader>ws", vim.lsp.buf.workspace_symbol, "Workspace symbol")
+    map("n", "<leader>d", vim.diagnostic.open_float, "Diagnostic float")
+    map("n", "<leader>dn", vim.diagnostic.goto_next, "Next diagnostic")
+    map("n", "<leader>dN", vim.diagnostic.goto_prev, "Prev diagnostic")
+    map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
+    map("n", "<leader>rr", vim.lsp.buf.references, "References")
+    map("n", "<leader>rn", vim.lsp.buf.rename, "Rename")
+    map("i", "<leader><C-h>", vim.lsp.buf.signature_help, "Signature help")
   end
 })
 
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
 -- vim.g.netrw_browse_split = 0
--- vim.g.netrw_banner = 0
--- vim.g.netrw_winsize = 25

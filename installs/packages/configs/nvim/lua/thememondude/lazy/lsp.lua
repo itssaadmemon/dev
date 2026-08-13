@@ -77,6 +77,9 @@ return {
       vim.lsp.enable('ts_ls')
       vim.lsp.config("ts_ls", {
         capabilities = capabilities,
+        formatting = {
+          format = false,
+        },
       })
 
       vim.lsp.enable('tailwindcss')
@@ -105,15 +108,6 @@ return {
 
       })
 
-      -- require("conform").setup({
-      --   formatters_by_ft = {
-      --     javascript = { "standardjs" },
-      --     javascriptreact = { "standardjs" }
-      --   }
-      -- })
-
-      -- require("fidget").setup({})
-      --
       local cmp_select = { behavior = cmp.SelectBehavior.Select }
       --
       cmp.setup({

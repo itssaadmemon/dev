@@ -10,7 +10,8 @@ vim.opt.showmatch      = true
 vim.opt.splitbelow     = true
 vim.opt.splitright     = true
 
-vim.opt.laststatus     = 2
+vim.opt.laststatus     = 3
+vim.opt.cmdheight      = 0
 vim.opt.scrolloff      = 10
 
 -- Search/Regex
@@ -49,3 +50,4 @@ vim.opt.mouse = 'a'
 vim.opt.clipboard = 'unnamedplus' -- use system clipboard
 vim.opt.confirm = true
 vim.opt.undofile = true
+vim.opt.completeopt = 'menu,menuone,noselect'

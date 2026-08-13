@@ -5,7 +5,6 @@ fzf
 neovim
 mise
 brave
-hyprland
 i3
 wezterm
 tmux

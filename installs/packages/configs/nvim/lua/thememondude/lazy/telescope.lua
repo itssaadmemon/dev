@@ -5,25 +5,33 @@ return {
         dependencies = {
             "nvim-lua/plenary.nvim"
         },
-        mappings = {
-            file_ignore_patterns = { '.git/' }
+        cmd = { "Telescope" },
+        keys = {
+            { "<leader>pf", function() require('telescope.builtin').find_files() end, desc = "Find files" },
+            { "<C-p>", function() require('telescope.builtin').git_files() end, desc = "Find git files" },
+            { "<leader>fb", function() require('telescope.builtin').buffers() end, desc = "Find buffers" },
+            {
+                "<leader>ps",
+                function()
+                    require('telescope.builtin').grep_string({ search = vim.fn.input("Grep > ") })
+                end,
+                desc = "Grep string",
+            },
+            { "<leader>lg", function() require('telescope.builtin').live_grep() end, desc = "Live grep" },
+            { "<leader>ls", function() require('telescope.builtin').lsp_document_symbols() end, desc = "Document symbols" },
+            { "<leader>vh", function() require('telescope.builtin').help_tags() end, desc = "Help tags" },
         },
         config = function()
-            local builtin = require('telescope.builtin')
-            vim.keymap.set('n', '<leader>pf', builtin.find_files, {})
-            vim.keymap.set('n', '<C-p>', builtin.git_files, {})
-            vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-
-            vim.keymap.set('n', '<leader>ps', function()
-                builtin.grep_string({ search = vim.fn.input("Grep > ") })
-            end)
-            vim.keymap.set('n', '<leader>vh', builtin.help_tags, {})
+            require("telescope").setup {
+                defaults = {
+                    file_ignore_patterns = { '.git/' }
+                }
+            }
         end
     },
     {
         'nvim-telescope/telescope-ui-select.nvim',
         config = function()
-            -- This is your opts table
             require("telescope").setup {
                 extensions = {
                     ["ui-select"] = {

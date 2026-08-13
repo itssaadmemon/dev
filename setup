@@ -13,10 +13,10 @@ log() {
 
 copy() {
     log "removing $2"
-    rm $2
+    rm -f "$2"
 
     log "copying: $1"
-    cp $1 $2
+    cp "$1" "$2"
 }
 
 
@@ -39,6 +39,7 @@ if [[ "$1" == "packages" ]]; then
 
     if [[ ${#pkgs_choices[@]} -gt 0 ]]; then
         for pkg in "${pkgs_choices[@]}"; do
+            [[ -z "$pkg" ]] && continue
             log "Installing: $pkg";
 
             "$package_dir/$pkg"
@@ -49,11 +50,13 @@ if [[ "$1" == "packages" ]]; then
             fi
 
             if [[ $pkg == "neovim" ]]; then
-                cp -rf "$pkg_config_dir/nvim" $HOME/.config/
+                log "replacing $HOME/.config/nvim"
+                rm -rf "$HOME/.config/nvim"
+                cp -rf "$pkg_config_dir/nvim" "$HOME/.config/"
             fi
 
              if [[ "$pkg" != "neovim" ]] && [[ -d "$pkg_config_dir/$pkg" ]]; then
-                cp -rf "$pkg_config_dir/$pkg" $HOME/.config/
+                cp -rf "$pkg_config_dir/$pkg" "$HOME/.config/"
             fi
         done
     fi
@@ -66,6 +69,7 @@ if [[ "$1" == "configs" ]]; then
 
     if [[ ${#config_choices[@]} -gt 0 ]]; then
         for config in "${config_choices[@]}"; do
+            [[ -z "$config" ]] && continue
             log "Copying: $config";
 
             if [[ $config == "zsh" ]]; then
@@ -74,14 +78,16 @@ if [[ "$1" == "configs" ]]; then
             fi
 
             if [[ $config == "neovim" ]]; then
-                cp -rf "$pkg_config_dir/nvim" $HOME/.config/
+                log "replacing $HOME/.config/nvim"
+                rm -rf "$HOME/.config/nvim"
+                cp -rf "$pkg_config_dir/nvim" "$HOME/.config/"
             fi
 
-            if [ $config != "neovim" ] && [ -d "$pkg_config_dir/$config" ]; then
-                cp -rf "$pkg_config_dir/$config" $HOME/.config/
+            if [ "$config" != "neovim" ] && [ -d "$pkg_config_dir/$config" ]; then
+                cp -rf "$pkg_config_dir/$config" "$HOME/.config/"
 
-                if [ $config == 'i3' ]; then
-                    cp -rf "$pkg_config_dir/i3status" $HOME/.config/
+                if [ "$config" == 'i3' ]; then
+                    cp -rf "$pkg_config_dir/i3status" "$HOME/.config/"
                 fi
             fi
         done
