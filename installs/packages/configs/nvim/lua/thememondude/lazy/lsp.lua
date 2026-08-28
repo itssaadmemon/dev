@@ -108,6 +108,11 @@ return {
 
       })
 
+      vim.lsp.enable('marksman')
+      vim.lsp.config('marksman', {
+        capabilities = capabilities,
+      })
+
       local cmp_select = { behavior = cmp.SelectBehavior.Select }
       --
       cmp.setup({

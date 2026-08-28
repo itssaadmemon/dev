@@ -15,6 +15,7 @@ return {
       javascriptreact = { "standardjs" },
       typescript = { "standardjs" },
       typescriptreact = { "standardjs" },
+      markdown = { "prettierd" },
     },
   },
 }
