@@ -10,4 +10,5 @@ wezterm
 tmux
 vscode
 lazydocker
+greenclip
 hermes

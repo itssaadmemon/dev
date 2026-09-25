@@ -1,4 +1,16 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-sudo apt -y install i3
-sudo apt -y install rofi
+sudo apt -y update
+sudo apt -y install \
+    i3 \
+    rofi \
+    dunst \
+    brightnessctl \
+    flameshot \
+    maim \
+    slop \
+    xclip \
+    network-manager-gnome \
+    pavucontrol \
+    libnotify-bin

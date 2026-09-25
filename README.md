@@ -37,7 +37,9 @@ Leader keys: **i3 = `Alt` (`Mod1`)**, **tmux = `Ctrl-a`**, **nvim = `Space`**.
 | Keys | Action |
 | --- | --- |
 | `Alt+Return` | WezTerm |
-| `Alt+d` | rofi (run) |
+| `Alt+d` | rofi: apps (`drun`) |
+| `Alt+Shift+d` | rofi: run command |
+| `Alt+Shift+v` | clipboard history (greenclip) |
 | `Alt+Shift+q` | kill window |
 | `Alt+h/j/k/l`, arrows | focus |
 | `Alt+Shift+h/j/k/l`, arrows | move window |
@@ -52,6 +54,9 @@ Leader keys: **i3 = `Alt` (`Mod1`)**, **tmux = `Ctrl-a`**, **nvim = `Space`**.
 | `Alt+Shift+c` / `Alt+Shift+r` / `Alt+Shift+e` | reload / restart / exit |
 | `Alt+Shift+period` | suspend |
 | `Alt+Shift+x` | lock |
+| `Alt+grave` / `Alt+Shift+grave` | scratchpad show / move to scratchpad |
+| `Alt+Tab` | last workspace |
+| `Print` / `Alt+Print` | screenshot region (flameshot) / full screen (maim) |
 | `XF86Audio*`, `XF86MonBrightness*` | volume / brightness |
 
 ### tmux (prefix `Ctrl-a`)

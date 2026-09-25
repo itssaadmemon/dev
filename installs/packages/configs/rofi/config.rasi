@@ -1,0 +1,92 @@
+configuration {
+    modi: "drun,run,window,clipboard:greenclip print";
+    show-icons: true;
+    icon-theme: "Papirus";
+    drun-display-format: "{icon} {name}";
+    display-drun: "  Apps";
+    display-run: "  Run";
+    display-window: "  Windows";
+    terminal: "wezterm";
+    font: "JetBrains Mono 12";
+}
+
+* {
+    bg: #1e1e2e;
+    bg-alt: #313244;
+    bg-selected: #45475a;
+    fg: #cdd6f4;
+    fg-selected: #1e1e2e;
+    accent: #89b4fa;
+
+    background-color: @bg;
+    text-color: @fg;
+    border: 2px;
+    border-color: @accent;
+    border-radius: 10px;
+    margin: 0px;
+    padding: 16px;
+    spacing: 8px;
+}
+
+window {
+    width: 40%;
+    border: 2px;
+    border-color: @accent;
+    border-radius: 10px;
+    background-color: @bg;
+}
+
+mainbox {
+    background-color: transparent;
+    children: [ inputbar, listview ];
+}
+
+inputbar {
+    background-color: @bg-alt;
+    text-color: @fg;
+    border-radius: 8px;
+    padding: 8px 12px;
+    children: [ prompt, entry ];
+}
+
+prompt {
+    background-color: transparent;
+    text-color: @accent;
+    padding: 0 8px 0 0;
+}
+
+entry {
+    background-color: transparent;
+    text-color: @fg;
+}
+
+listview {
+    background-color: transparent;
+    columns: 1;
+    lines: 10;
+    spacing: 4px;
+    scrollbar: false;
+}
+
+element {
+    background-color: transparent;
+    text-color: @fg;
+    padding: 8px;
+    border-radius: 6px;
+}
+
+element selected {
+    background-color: @accent;
+    text-color: @fg-selected;
+}
+
+element-icon {
+    size: 1.2em;
+    background-color: transparent;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    vertical-align: 0.5;
+}

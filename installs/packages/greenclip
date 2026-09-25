@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+arch="$(uname -m)"
+case "$arch" in
+    x86_64) asset="greenclip" ;;
+    aarch64 | arm64) asset="greenclip_aarch64" ;;
+    *)
+        echo "greenclip: unsupported architecture: $arch" >&2
+        exit 1
+        ;;
+esac
+
+tmp="/tmp/greenclip"
+curl -fsSL -o "$tmp" \
+    "https://github.com/erebe/greenclip/releases/download/v4.2/${asset}"
+chmod +x "$tmp"
+sudo install -m 0755 "$tmp" /usr/local/bin/greenclip
+rm -f "$tmp"
+
+echo "installed greenclip to /usr/local/bin/greenclip"

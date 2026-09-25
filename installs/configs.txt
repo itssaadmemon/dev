@@ -1,5 +1,7 @@
 zsh
 i3
+dunst
+rofi
 neovim
 tmux
 wezterm
