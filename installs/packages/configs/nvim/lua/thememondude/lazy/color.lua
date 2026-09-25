@@ -18,26 +18,4 @@ return {
       vim.cmd.colorscheme "catppuccin-mocha"
     end
   },
-  {
-    'rose-pine/neovim',
-    name = "rose-pine",
-    config = function()
-      require("rose-pine").setup()
-      -- vim.cmd("colorscheme rose-pine-dawn")
-      -- vim.cmd("colorscheme rose-pine-moon")
-    end
-  },
-  {
-    'folke/tokyonight.nvim',
-    lazy = false,
-    priority = 1000,
-    opts = {},
-    config = function(_, opts)
-      require('tokyonight').setup({
-        style = 'night',
-        transparent = true
-      })
-      -- vim.cmd.colorscheme "tokyonight"
-    end,
-  }
 }

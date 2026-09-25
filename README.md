@@ -80,7 +80,7 @@ Leader keys: **i3 = `Alt` (`Mod1`)**, **tmux = `Ctrl-a`**, **nvim = `Space`**.
 | `<leader>lg` | live grep |
 | `<leader>ls` | document symbols |
 | `<leader>sr` | search & replace (grug-far) |
-| `<leader>f` | format buffer |
+| `<leader>f` | format buffer (`mix format` for Elixir) |
 | `<leader>t` / `<leader>tf` | run nearest test / test file |
 | `<leader>u` | toggle undotree |
 | `<leader>zz` / `<leader>zZ` | zen mode (numbers / clean) |
@@ -89,6 +89,15 @@ Leader keys: **i3 = `Alt` (`Mod1`)**, **tmux = `Ctrl-a`**, **nvim = `Space`**.
 | `<leader><leader>` | source current file |
 | `<C-h/j/k/l>` | window navigation |
 | `Left` / `Right` | previous / next buffer |
+
+**Completion (blink.cmp):**
+
+| Keys | Action |
+| --- | --- |
+| `<C-Space>` | show completion |
+| `<C-n>` / `<C-p>` | next / previous item |
+| `<CR>` | accept |
+| `<C-e>` | hide |
 
 **LSP (available once a server attaches):**
 
@@ -123,8 +132,8 @@ Leader keys: **i3 = `Alt` (`Mod1`)**, **tmux = `Ctrl-a`**, **nvim = `Space`**.
 ## Roadmap
 
 - [x] **Phase 0** — repo hygiene, hardened `setup`, keymap docs
-- [ ] **Phase 1** — i3/X11 polish (dunst, flameshot, clipboard history, screen lock)
-- [ ] **Phase 2** — Neovim modernization (DAP debugging, gitsigns/lazygit, CodeCompanion, tmux-nav)
+- [x] **Phase 1** — i3/X11 polish (dunst, flameshot, clipboard history, screen lock)
+- [x] **Phase 2** — Neovim modernization (blink.cmp, treesitter pinned, `mix` formatting, textobjects fixed)
 - [ ] **Phase 3** — Elixir environment (mise pins, dockerized Postgres, `mix format`)
 - [ ] **Phase 4** — worktrees + sandboxes (devcontainer, agent-per-worktree)
 - [ ] **Phase 5** — shell (drop Oh My Zsh, add zoxide/atuin/starship, modern CLI tools)

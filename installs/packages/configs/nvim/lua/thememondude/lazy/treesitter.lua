@@ -1,6 +1,10 @@
 return {
   "nvim-treesitter/nvim-treesitter",
+  branch = "master",
   build = ":TSUpdate",
+  dependencies = {
+    { "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
+  },
   config = function()
     require("nvim-treesitter.configs").setup({
       -- A list of parser names, or "all"
@@ -28,9 +32,8 @@ return {
       -- Install parsers synchronously (only applied to `ensure_installed`)
       sync_install = false,
 
-      -- Automatically install missing parsers when entering buffer
-      -- Recommendation: set to false if you don"t have `tree-sitter` CLI installed locally
-      auto_install = true,
+      -- Do not silently install parsers on buffer open (no tree-sitter CLI here).
+      auto_install = false,
 
       indent = {
         enable = true
@@ -41,7 +44,6 @@ return {
         enable = true,
         disable = function(lang, buf)
           if lang == "html" then
-            print("disabled")
             return true
           end
 
@@ -62,6 +64,18 @@ return {
         -- Using this option may slow down your editor, and you may see some duplicate highlights.
         -- Instead of true it can also be a list of languages
         additional_vim_regex_highlighting = false,
+      },
+
+      -- Selection is handled by mini.ai; only wire the movement text objects here.
+      textobjects = {
+        move = {
+          enable = true,
+          set_jumps = true,
+          goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer", ["]a"] = "@parameter.inner" },
+          goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer" },
+          goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer", ["[a"] = "@parameter.inner" },
+          goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer" },
+        },
       },
     })
   end

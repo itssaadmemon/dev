@@ -6,7 +6,7 @@ return {
       function()
         require("conform").format({ lsp_fallback = true })
       end,
-      desc = "Format buffer (standardjs)",
+      desc = "Format buffer",
     },
   },
   opts = {
@@ -16,6 +16,9 @@ return {
       typescript = { "standardjs" },
       typescriptreact = { "standardjs" },
       markdown = { "prettierd" },
+      elixir = { "mix" },
+      eex = { "mix" },
+      heex = { "mix" },
     },
   },
 }
