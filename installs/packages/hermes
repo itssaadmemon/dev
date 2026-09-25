@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Hermes Agent + Desktop (Nous Research)
+# https://hermes-agent.nousresearch.com
+
+# Linux prerequisites the official installer does not cover
+sudo apt update
+sudo apt install -y git curl xz-utils build-essential libatomic1
+
+# Install Hermes Agent CLI + build the Electron desktop app.
+# Runs the interactive setup wizard so you can pick your provider and model.
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash -s -- \
+  --include-desktop

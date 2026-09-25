@@ -10,3 +10,4 @@ wezterm
 tmux
 vscode
 lazydocker
+hermes
