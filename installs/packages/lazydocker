@@ -1,5 +1,24 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-cd $HOME && git clone https://github.com/jesseduffield/lazydocker.git
-cd lazydocker
-go install
+arch="$(uname -m)"
+case "$arch" in
+    x86_64) arch="x86_64" ;;
+    aarch64 | arm64) arch="arm64" ;;
+    *)
+        echo "lazydocker: unsupported architecture: $arch" >&2
+        exit 1
+        ;;
+esac
+
+version="$(curl -fsSL https://api.github.com/repos/jesseduffield/lazydocker/releases/latest \
+    | grep -oP '"tag_name":\s*"\K[^"]+')"
+tarball="/tmp/lazydocker.tar.gz"
+
+curl -fsSL -o "$tarball" \
+    "https://github.com/jesseduffield/lazydocker/releases/download/${version}/lazydocker_${version#v}_Linux_${arch}.tar.gz"
+
+sudo tar -C /usr/local/bin -xzf "$tarball" lazydocker
+rm -f "$tarball"
+
+echo "installed lazydocker ${version} to /usr/local/bin/lazydocker"

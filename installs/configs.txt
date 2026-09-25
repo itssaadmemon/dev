@@ -1,0 +1,5 @@
+zsh
+i3
+neovim
+tmux
+wezterm

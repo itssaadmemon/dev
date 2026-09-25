@@ -1,97 +1,100 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-root_dir="$(dirname "${BASH_SOURCE[0]}")"
+root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 install_dir="$root_dir/installs"
-
 package_dir="$install_dir/packages"
 pkg_config_dir="$package_dir/configs"
-# installs=`find $root_dir/installs -mindepth 1 -maxdepth 1 -executable`
 
 log() {
-    echo "$1"
+    echo "$*"
 }
 
 copy() {
-    log "removing $2"
-    rm -f "$2"
-
-    log "copying: $1"
-    cp "$1" "$2"
+    local src="$1" dest="$2"
+    log "removing $dest"
+    rm -rf "$dest"
+    mkdir -p "$(dirname "$dest")"
+    log "copying: $src"
+    cp -rf "$src" "$dest"
 }
 
+list_choices() {
+    local file="$1"
+    grep -vE '^\s*$|^#' "$file"
+}
 
-if [[ "$1" == "upgrade" ]]; then
-    sudo apt -y update && sudo apt -y upgrade
-fi
+copy_config() {
+    local config="$1"
 
-if [[ "$1" == "base" ]]; then
-    # base packages
-   sudo apt -y install luarocks ca-certificates wget unzip curl ninja-build gettext cmake build-essential git   
-  command -v gum >/dev/null 2>&1 || "$install_dir/gum"
-fi
-
-
-if [[ "$1" == "packages" ]]; then
-
-    mapfile -t packages < <(grep -vE '^\s*$|^#' "$install_dir/packages.txt")
-
-    mapfile -t pkgs_choices < <(gum choose --no-limit "${packages[@]}")
-
-    if [[ ${#pkgs_choices[@]} -gt 0 ]]; then
-        for pkg in "${pkgs_choices[@]}"; do
-            [[ -z "$pkg" ]] && continue
-            log "Installing: $pkg";
-
-            "$package_dir/$pkg"
-
-            if [[ $pkg == "zsh" ]]; then
-                copy "$pkg_config_dir/.zshrc" "$HOME/.zshrc"
-                copy "$pkg_config_dir/.zsh_profile" "$HOME/.zsh_profile"
+    case "$config" in
+        zsh)
+            copy "$pkg_config_dir/.zshrc" "$HOME/.zshrc"
+            copy "$pkg_config_dir/.zsh_profile" "$HOME/.zsh_profile"
+            ;;
+        neovim)
+            copy "$pkg_config_dir/nvim" "$HOME/.config/nvim"
+            ;;
+        i3)
+            copy "$pkg_config_dir/i3" "$HOME/.config/i3"
+            copy "$pkg_config_dir/i3status" "$HOME/.config/i3status"
+            ;;
+        *)
+            if [[ -d "$pkg_config_dir/$config" ]]; then
+                copy "$pkg_config_dir/$config" "$HOME/.config/$config"
+            else
+                log "no config found for: $config (skipping)"
             fi
+            ;;
+    esac
+}
 
-            if [[ $pkg == "neovim" ]]; then
-                log "replacing $HOME/.config/nvim"
-                rm -rf "$HOME/.config/nvim"
-                cp -rf "$pkg_config_dir/nvim" "$HOME/.config/"
-            fi
+case "${1:-}" in
+    upgrade)
+        sudo apt -y update && sudo apt -y upgrade
+        ;;
 
-             if [[ "$pkg" != "neovim" ]] && [[ -d "$pkg_config_dir/$pkg" ]]; then
-                cp -rf "$pkg_config_dir/$pkg" "$HOME/.config/"
-            fi
-        done
-    fi
-fi
+    base)
+        sudo apt -y install luarocks ca-certificates wget unzip curl ninja-build gettext cmake build-essential git
+        command -v gum >/dev/null 2>&1 || "$install_dir/gum"
+        ;;
 
+    packages)
+        mapfile -t packages < <(list_choices "$install_dir/packages.txt")
+        mapfile -t pkgs_choices < <(gum choose --no-limit "${packages[@]}")
 
-if [[ "$1" == "configs" ]]; then
-    mapfile -t config_packages < <(grep -vE '^\s*$|^#' "$install_dir/packages.txt")
-    mapfile -t config_choices < <(gum choose --no-limit "${config_packages[@]}")
+        if [[ ${#pkgs_choices[@]} -gt 0 ]]; then
+            for pkg in "${pkgs_choices[@]}"; do
+                [[ -z "$pkg" ]] && continue
+                log "Installing: $pkg"
+                "$package_dir/$pkg"
+                copy_config "$pkg"
+            done
+        fi
+        ;;
 
-    if [[ ${#config_choices[@]} -gt 0 ]]; then
-        for config in "${config_choices[@]}"; do
-            [[ -z "$config" ]] && continue
-            log "Copying: $config";
+    configs)
+        mapfile -t config_packages < <(list_choices "$install_dir/configs.txt")
+        mapfile -t config_choices < <(gum choose --no-limit "${config_packages[@]}")
 
-            if [[ $config == "zsh" ]]; then
-                copy "$pkg_config_dir/.zshrc" "$HOME/.zshrc"
-                copy "$pkg_config_dir/.zsh_profile" "$HOME/.zsh_profile" 
-            fi
+        if [[ ${#config_choices[@]} -gt 0 ]]; then
+            for config in "${config_choices[@]}"; do
+                [[ -z "$config" ]] && continue
+                log "Copying: $config"
+                copy_config "$config"
+            done
+        fi
+        ;;
 
-            if [[ $config == "neovim" ]]; then
-                log "replacing $HOME/.config/nvim"
-                rm -rf "$HOME/.config/nvim"
-                cp -rf "$pkg_config_dir/nvim" "$HOME/.config/"
-            fi
+    *)
+        cat <<'EOF'
+Usage: ./setup <command>
 
-            if [ "$config" != "neovim" ] && [ -d "$pkg_config_dir/$config" ]; then
-                cp -rf "$pkg_config_dir/$config" "$HOME/.config/"
-
-                if [ "$config" == 'i3' ]; then
-                    cp -rf "$pkg_config_dir/i3status" "$HOME/.config/"
-                fi
-            fi
-        done
-    fi
-fi
-
-# echo $1
+Commands:
+  upgrade    apt update && apt upgrade
+  base       install base build/runtime packages + gum
+  packages   interactive package install (+ matching configs)
+  configs    interactive config copy only
+EOF
+        ;;
+esac
