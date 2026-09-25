@@ -1,7 +1,7 @@
 return {
   "nvim-neo-tree/neo-tree.nvim",
   branch = "v3.x",
-  cmd = { "Neotree" },
+  lazy = false,
   keys = {
     { "<leader>b", "<cmd>Neotree toggle<CR>", desc = "Toggle file tree" },
   },
