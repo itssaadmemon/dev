@@ -17,22 +17,14 @@ alias gco="git checkout"
 
 alias doc="docker"
 alias lzd='lazydocker'
-
-# alias cursor="/opt/cursor.appimage"
+alias lzg='lazygit'
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export GIT_EDITOR=$VIM
 export DEV_CODE="$HOME/code"
-export PATH="$HOME/.cache/rebar3/bin:$PATH"
-
-# Where should I put you?
-# bindkey -s ^f "tmux-sessionizer\n"
 
 eval "$(~/.local/bin/mise activate zsh)"
-
-export FLYCTL_INSTALL="/home/$USER/.fly"
-export PATH="$FLYCTL_INSTALL/bin:$PATH"
 
 # opencode
 export PATH=/home/thememondude/.opencode/bin:$PATH

@@ -10,6 +10,7 @@ wezterm
 tmux
 vscode
 lazydocker
+lazygit
 greenclip
 livebook
 hermes
