@@ -12,5 +12,7 @@ vscode
 lazydocker
 lazygit
 greenclip
+starship
+nerd-font
 livebook
 hermes

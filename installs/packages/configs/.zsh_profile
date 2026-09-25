@@ -33,3 +33,6 @@ export PATH=/home/thememondude/.opencode/bin:$PATH
 export PATH=$PATH:/usr/local/go/bin
 # rustup
 export PATH=$HOME/.cargo/bin:$PATH
+
+# starship prompt
+eval "$(starship init zsh)"

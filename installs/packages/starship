@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+bin_dir="$HOME/.local/bin"
+mkdir -p "$bin_dir"
+
+curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b "$bin_dir"
+
+echo "installed starship to $bin_dir/starship"

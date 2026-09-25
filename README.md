@@ -137,4 +137,4 @@ Leader keys: **i3 = `Alt` (`Mod1`)**, **tmux = `Ctrl-a`**, **nvim = `Space`**.
 - [x] **Phase 2** — Neovim modernization (blink.cmp, treesitter pinned, `mix` formatting, textobjects fixed)
 - [x] **Phase 3** — Elixir environment (mise pins, local Postgres 18, Livebook Desktop)
 - [x] **Phase 4** — git/docker TUIs (lazydocker + lazygit, `lzd`/`lzg` aliases)
-- [ ] **Phase 5** — shell (drop Oh My Zsh, add zoxide/atuin/starship, modern CLI tools)
+- [x] **Phase 5** — shell prompt (starship + JetBrainsMono Nerd Font; Oh My Zsh kept)
