@@ -134,6 +134,6 @@ Leader keys: **i3 = `Alt` (`Mod1`)**, **tmux = `Ctrl-a`**, **nvim = `Space`**.
 - [x] **Phase 0** — repo hygiene, hardened `setup`, keymap docs
 - [x] **Phase 1** — i3/X11 polish (dunst, flameshot, clipboard history, screen lock)
 - [x] **Phase 2** — Neovim modernization (blink.cmp, treesitter pinned, `mix` formatting, textobjects fixed)
-- [ ] **Phase 3** — Elixir environment (mise pins, dockerized Postgres, `mix format`)
+- [x] **Phase 3** — Elixir environment (mise pins, local Postgres 18, Livebook Desktop)
 - [ ] **Phase 4** — worktrees + sandboxes (devcontainer, agent-per-worktree)
 - [ ] **Phase 5** — shell (drop Oh My Zsh, add zoxide/atuin/starship, modern CLI tools)
