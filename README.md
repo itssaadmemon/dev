@@ -129,12 +129,3 @@ Leader keys: **i3 = `Alt` (`Mod1`)**, **tmux = `Ctrl-a`**, **nvim = `Space`**.
 `g`=git, `gc`=clone, `gs`=status, `gi`=init, `ga`=add, `gct`=commit, `gph`=push, `gpl`=pull,
 `gr`=restore, `gb`=branch, `gco`=checkout, `doc`=docker, `lzd`=lazydocker, `lzg`=lazygit,
 `vim`=nvim.
-
-## Roadmap
-
-- [x] **Phase 0** — repo hygiene, hardened `setup`, keymap docs
-- [x] **Phase 1** — i3/X11 polish (dunst, flameshot, clipboard history, screen lock)
-- [x] **Phase 2** — Neovim modernization (blink.cmp, treesitter pinned, `mix` formatting, textobjects fixed)
-- [x] **Phase 3** — Elixir environment (mise pins, local Postgres 18, Livebook Desktop)
-- [x] **Phase 4** — git/docker TUIs (lazydocker + lazygit, `lzd`/`lzg` aliases)
-- [x] **Phase 5** — shell prompt (starship + JetBrainsMono Nerd Font; Oh My Zsh kept)
