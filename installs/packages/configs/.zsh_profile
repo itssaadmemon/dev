@@ -27,7 +27,7 @@ export DEV_CODE="$HOME/code"
 eval "$(~/.local/bin/mise activate zsh)"
 
 # opencode
-export PATH=/home/thememondude/.opencode/bin:$PATH
+export PATH="$HOME/.opencode/bin:$PATH"
 
 # go bin
 export PATH=$PATH:/usr/local/go/bin
