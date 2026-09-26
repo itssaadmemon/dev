@@ -16,7 +16,6 @@ return {
       { "<leader>p", group = "file/find" },
       { "<leader>r", group = "references/rename" },
       { "<leader>s", group = "split/search" },
-      { "<leader>t", group = "test" },
       { "<leader>u", group = "undo" },
       { "<leader>v", group = "window/help" },
       { "<leader>w", group = "workspace" },

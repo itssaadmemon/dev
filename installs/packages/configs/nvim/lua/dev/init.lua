@@ -27,7 +27,26 @@ autocmd('LspAttach', {
     map("n", "<leader>rr", vim.lsp.buf.references, "References")
     map("n", "<leader>rn", vim.lsp.buf.rename, "Rename")
     map("i", "<leader><C-h>", vim.lsp.buf.signature_help, "Signature help")
+    map("n", "gd", vim.lsp.buf.definition, "Goto definition")
+    map("n", "K", vim.lsp.buf.hover, "Hover (K)")
+    map("n", "[d", vim.diagnostic.goto_prev, "Prev diagnostic")
+    map("n", "]d", vim.diagnostic.goto_next, "Next diagnostic")
+    map("n", "<leader>zig", "<cmd>LspRestart<cr>", "Restart LSP")
   end
+})
+
+-- trim trailing whitespace on save
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*",
+  command = [[%s/\s\+$//e]],
+})
+
+-- highlight on yank
+vim.api.nvim_create_autocmd("TextYankPost", {
+  pattern = "*",
+  callback = function()
+    vim.highlight.on_yank({ higroup = "IncSearch", timeout = 40 })
+  end,
 })
 
 -- vim.g.netrw_browse_split = 0

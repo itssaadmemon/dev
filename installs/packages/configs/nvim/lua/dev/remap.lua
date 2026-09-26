@@ -38,3 +38,22 @@ vim.keymap.set("n", "Q", "<nop>", { desc = "Disable ex mode" })
 vim.keymap.set("n", "<leader><leader>", function()
   vim.cmd("so")
 end, { desc = "Source file" })
+
+-- centered motions
+vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Page down (centered)" })
+vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Page up (centered)" })
+vim.keymap.set("n", "n", "nzzzv", { desc = "Next result (centered)" })
+vim.keymap.set("n", "N", "Nzzzv", { desc = "Prev result (centered)" })
+vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines (keep cursor)" })
+vim.keymap.set("n", "=ap", "ma=ap'a", { desc = "Reindent paragraph (keep cursor)" })
+
+-- register-safe yank/delete
+vim.keymap.set({ "n", "v" }, "<leader>y", '"+y', { desc = "Yank to system clipboard" })
+vim.keymap.set("n", "<leader>Y", '"+Y', { desc = "Yank line to system clipboard" })
+vim.keymap.set({ "n", "v" }, "<leader>D", '"_d', { desc = "Delete to void" })
+
+-- misc
+vim.keymap.set("i", "<C-c>", "<Esc>", { desc = "Escape insert mode" })
+vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true, desc = "chmod +x" })
+vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz", { desc = "Location list next" })
+vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz", { desc = "Location list prev" })
