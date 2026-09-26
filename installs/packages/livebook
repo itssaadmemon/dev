@@ -3,6 +3,9 @@ set -euo pipefail
 
 dest_dir="$HOME/.local/bin"
 app="$dest_dir/livebook"
+wrapper="$dest_dir/livebook-desktop"
+env_dir="$HOME/.config/livebook"
+env_file="$env_dir/env"
 icon_dir="$HOME/.local/share/icons"
 icon="$icon_dir/livebook.png"
 applications_dir="$HOME/.local/share/applications"
@@ -22,12 +25,36 @@ tag="$(curl -fsSL https://api.github.com/repos/livebook-dev/livebook/releases/la
     | grep -oP '"tag_name":\s*"\K[^"]+')"
 echo "Latest release: $tag"
 
-mkdir -p "$dest_dir" "$icon_dir" "$applications_dir"
+mkdir -p "$dest_dir" "$icon_dir" "$applications_dir" "$env_dir"
 
 echo "Downloading Livebook-linux-${arch}.AppImage..."
 curl -fL --progress-bar -o "$app" \
     "https://github.com/livebook-dev/livebook/releases/download/${tag}/Livebook-linux-${arch}.AppImage"
 chmod +x "$app"
+
+# Password-auth launcher: loads secrets from ~/.config/livebook/env, then starts the AppImage.
+cat > "$wrapper" <<'EOF'
+#!/usr/bin/env bash
+# Livebook Desktop launcher with admin password authentication.
+set -a
+[ -f "$HOME/.config/livebook/env" ] && . "$HOME/.config/livebook/env"
+set +a
+exec "$HOME/.local/bin/livebook" "$@"
+EOF
+chmod 700 "$wrapper"
+
+# Create the secret env file with a random password on first install (kept out of the dotfiles repo).
+if [[ ! -f "$env_file" ]]; then
+    pw="$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 24)"
+    cat > "$env_file" <<EOF
+# Livebook admin authentication (password instead of token).
+# Must be at least 12 characters. Setting LIVEBOOK_PASSWORD disables token auth.
+export LIVEBOOK_PASSWORD='$pw'
+export LIVEBOOK_TOKEN_ENABLED=false
+EOF
+    chmod 600 "$env_file"
+    echo "Livebook password: $pw  (saved in $env_file)"
+fi
 
 # Best-effort icon extraction from the AppImage.
 if [[ ! -f "$icon" ]]; then
@@ -56,7 +83,7 @@ cat > "$applications_dir/livebook.desktop" <<EOF
 Type=Application
 Name=Livebook
 Comment=Interactive notebooks for Elixir
-Exec=$app
+Exec=$wrapper
 Icon=$icon
 Terminal=false
 Categories=Development;IDE;
