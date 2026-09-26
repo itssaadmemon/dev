@@ -12,11 +12,11 @@ return {
   opts = {
     format_on_save = { timeout_ms = 5000, lsp_format = "fallback" },
     formatters_by_ft = {
-      javascript = { "standardjs" },
-      javascriptreact = { "standardjs" },
-      typescript = { "standardjs" },
-      typescriptreact = { "standardjs" },
-      markdown = { "prettierd" },
+      javascript = { "oxfmt", "oxlint" },
+      javascriptreact = { "oxfmt", "oxlint" },
+      typescript = { "oxfmt", "oxlint" },
+      typescriptreact = { "oxfmt", "oxlint" },
+      markdown = { "prettier" },
       elixir = { "mix" },
       eex = { "mix" },
       heex = { "mix" },
