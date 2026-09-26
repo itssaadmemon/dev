@@ -1,7 +1,7 @@
 vim.g.mapleader = " "
-require("thememondude.set")
-require("thememondude.lazy_init")
-require("thememondude.remap")
+require("dev.set")
+require("dev.lazy_init")
+require("dev.remap")
 
 local augroup = vim.api.nvim_create_augroup
 local LocalGroup = augroup('LocalGroup', {})
