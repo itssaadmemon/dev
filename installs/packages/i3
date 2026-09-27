@@ -5,7 +5,6 @@ sudo apt -y update
 sudo apt -y install \
     i3 \
     rofi \
-    dunst \
     brightnessctl \
     flameshot \
     maim \
