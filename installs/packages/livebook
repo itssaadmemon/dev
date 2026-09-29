@@ -8,20 +8,18 @@ set -euo pipefail
 #   ~/.local/share/mise/installs/elixir/<ver>/.mix/escripts/livebook  (on PATH via mise)
 #   ~/.local/bin/livebook-server   launcher that loads env then runs `livebook server`
 #   ~/.config/livebook/env         password + port config (kept out of this repo)
-#   ~/.local/share/applications/livebook.desktop + icon
+#
+# Run it yourself from a terminal: livebook-server
 
 env_dir="$HOME/.config/livebook"
 env_file="$env_dir/env"
 wrapper="$HOME/.local/bin/livebook-server"
-applications_dir="$HOME/.local/share/applications"
-icon_dir="$HOME/.local/share/icons"
-icon="$icon_dir/livebook.png"
 
 echo "Installing Livebook escript (uses your Elixir)..."
 mix do local.rebar --force, local.hex --force
 HEX_HTTP_CONCURRENCY=1 HEX_HTTP_TIMEOUT=180 mix escript.install hex livebook --force
 
-mkdir -p "$env_dir" "$applications_dir" "$icon_dir" "$HOME/.local/bin"
+mkdir -p "$env_dir" "$HOME/.local/bin"
 
 # Password + fixed ports (random password on first install; kept out of the repo).
 if [[ ! -f "$env_file" ]]; then
@@ -49,30 +47,5 @@ exec livebook server "$@"
 EOF
 chmod 700 "$wrapper"
 
-# Icon (from the Livebook Hex package static assets), best-effort.
-if [[ ! -f "$icon" ]]; then
-    tmp="$(mktemp -d)"
-    if curl -fsSL -o "$tmp/livebook.tar" "https://repo.hex.pm/tarballs/livebook-0.19.10.tar" 2>/dev/null; then
-        tar xf "$tmp/livebook.tar" -C "$tmp" 2>/dev/null || true
-        tar xzf "$tmp/contents.tar.gz" -C "$tmp" 2>/dev/null || true
-        found="$(find "$tmp" -path '*static/images/logo.png' -type f -print -quit 2>/dev/null || true)"
-        [[ -n "$found" ]] && cp "$found" "$icon"
-    fi
-    rm -rf "$tmp"
-fi
-
-cat > "$applications_dir/livebook.desktop" <<EOF
-[Desktop Entry]
-Type=Application
-Name=Livebook
-Comment=Interactive notebooks for Elixir
-Exec=$wrapper
-Icon=$icon
-Terminal=true
-Categories=Development;IDE;
-EOF
-
-update-desktop-database "$applications_dir" >/dev/null 2>&1 || true
-
 echo "installed livebook escript (on PATH) and launcher $wrapper"
-echo "start from a terminal: livebook-server   |   or via rofi: Livebook"
+echo "start from a terminal: livebook-server"
