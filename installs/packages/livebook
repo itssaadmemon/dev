@@ -1,89 +1,64 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-dest_dir="$HOME/.local/bin"
-app="$dest_dir/livebook"
-wrapper="$dest_dir/livebook-desktop"
+# Livebook via escript: runs on the user's Elixir (mise), so Mix.install and the
+# host Mix/Hex environment work natively (no bundled read-only runtime).
+#
+# Installs:
+#   ~/.local/share/mise/installs/elixir/<ver>/.mix/escripts/livebook  (on PATH via mise)
+#   ~/.local/bin/livebook-server   launcher that loads env then runs `livebook server`
+#   ~/.config/livebook/env         password + port config (kept out of this repo)
+#   ~/.local/share/applications/livebook.desktop + icon
+
 env_dir="$HOME/.config/livebook"
 env_file="$env_dir/env"
+wrapper="$HOME/.local/bin/livebook-server"
+applications_dir="$HOME/.local/share/applications"
 icon_dir="$HOME/.local/share/icons"
 icon="$icon_dir/livebook.png"
-applications_dir="$HOME/.local/share/applications"
 
-arch="$(uname -m)"
-case "$arch" in
-    x86_64) arch="amd64" ;;
-    aarch64 | arm64) arch="arm64" ;;
-    *)
-        echo "livebook: unsupported architecture: $arch" >&2
-        exit 1
-        ;;
-esac
+echo "Installing Livebook escript (uses your Elixir)..."
+mix do local.rebar --force, local.hex --force
+HEX_HTTP_CONCURRENCY=1 HEX_HTTP_TIMEOUT=180 mix escript.install hex livebook --force
 
-echo "Fetching latest Livebook release..."
-tag="$(curl -fsSL https://api.github.com/repos/livebook-dev/livebook/releases/latest \
-    | grep -oP '"tag_name":\s*"\K[^"]+')"
-echo "Latest release: $tag"
+mkdir -p "$env_dir" "$applications_dir" "$icon_dir" "$HOME/.local/bin"
 
-mkdir -p "$dest_dir" "$icon_dir" "$applications_dir" "$env_dir"
-
-echo "Downloading Livebook-linux-${arch}.AppImage..."
-curl -fL --progress-bar -o "$app" \
-    "https://github.com/livebook-dev/livebook/releases/download/${tag}/Livebook-linux-${arch}.AppImage"
-chmod +x "$app"
-
-# Password-auth launcher: loads secrets from ~/.config/livebook/env, then starts the AppImage.
-cat > "$wrapper" <<'EOF'
-#!/usr/bin/env bash
-# Livebook Desktop launcher with admin password authentication.
-set -a
-[ -f "$HOME/.config/livebook/env" ] && . "$HOME/.config/livebook/env"
-set +a
-exec "$HOME/.local/bin/livebook" "$@"
-EOF
-chmod 700 "$wrapper"
-
-# Create the secret env file with a random password on first install (kept out of the dotfiles repo).
+# Password + fixed ports (random password on first install; kept out of the repo).
 if [[ ! -f "$env_file" ]]; then
     pw="$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 24)"
     cat > "$env_file" <<EOF
-# Livebook admin authentication (password instead of token).
-# Must be at least 12 characters. Setting LIVEBOOK_PASSWORD disables token auth.
+# Livebook env (escript install; runs on mise Elixir).
+# Password must be at least 12 characters. Setting it disables token auth.
 export LIVEBOOK_PASSWORD='$pw'
 export LIVEBOOK_TOKEN_ENABLED=false
-
-# Point Mix/Hex at writable dirs on the host instead of the read-only AppImage mount,
-# so Mix.install works in notebooks.
-export MIX_HOME="\$HOME/.mix"
-export MIX_ARCHIVES="\$HOME/.mix/archives"
-export HEX_HOME="\$HOME/.hex"
+# Stable ports so the URL does not change between runs.
+export LIVEBOOK_PORT=9000
+export LIVEBOOK_IFRAME_PORT=9001
 EOF
     chmod 600 "$env_file"
     echo "Livebook password: $pw  (saved in $env_file)"
 fi
 
-mkdir -p "$HOME/.mix/archives" "$HOME/.hex"
+cat > "$wrapper" <<'EOF'
+#!/usr/bin/env bash
+# Launch Livebook (escript) with env from ~/.config/livebook/env.
+set -a
+[ -f "$HOME/.config/livebook/env" ] && . "$HOME/.config/livebook/env"
+set +a
+exec livebook server "$@"
+EOF
+chmod 700 "$wrapper"
 
-# Best-effort icon extraction from the AppImage.
+# Icon (from the Livebook Hex package static assets), best-effort.
 if [[ ! -f "$icon" ]]; then
-    tmpdir="$(mktemp -d)"
-    (
-        cd "$tmpdir"
-        "$app" --appimage-extract 'usr/share/icons/*' >/dev/null 2>&1 || true
-        found=""
-        for pattern in '256x256@2/apps/livebook.png' '256x256/apps/livebook.png' '128x128/apps/livebook.png' 'livebook.png'; do
-            found="$(find "$tmpdir/squashfs-root" -type f -iname "$(basename "$pattern")" -path "*${pattern%/*}*" -print -quit 2>/dev/null || true)"
-            [[ -n "$found" ]] && break
-        done
-        if [[ -z "$found" ]]; then
-            "$app" --appimage-extract >/dev/null 2>&1 || true
-            found="$(find "$tmpdir/squashfs-root" -type f -iname 'livebook.png' -print -quit 2>/dev/null || true)"
-        fi
-        if [[ -n "$found" ]]; then
-            cp "$found" "$icon"
-        fi
-    )
-    rm -rf "$tmpdir"
+    tmp="$(mktemp -d)"
+    if curl -fsSL -o "$tmp/livebook.tar" "https://repo.hex.pm/tarballs/livebook-0.19.10.tar" 2>/dev/null; then
+        tar xf "$tmp/livebook.tar" -C "$tmp" 2>/dev/null || true
+        tar xzf "$tmp/contents.tar.gz" -C "$tmp" 2>/dev/null || true
+        found="$(find "$tmp" -path '*static/images/logo.png' -type f -print -quit 2>/dev/null || true)"
+        [[ -n "$found" ]] && cp "$found" "$icon"
+    fi
+    rm -rf "$tmp"
 fi
 
 cat > "$applications_dir/livebook.desktop" <<EOF
@@ -93,11 +68,11 @@ Name=Livebook
 Comment=Interactive notebooks for Elixir
 Exec=$wrapper
 Icon=$icon
-Terminal=false
+Terminal=true
 Categories=Development;IDE;
 EOF
 
 update-desktop-database "$applications_dir" >/dev/null 2>&1 || true
 
-echo "installed Livebook $tag to $app"
-echo "launch from rofi (Alt+d), or run: livebook"
+echo "installed livebook escript (on PATH) and launcher $wrapper"
+echo "start from a terminal: livebook-server   |   or via rofi: Livebook"
