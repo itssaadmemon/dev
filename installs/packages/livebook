@@ -51,10 +51,18 @@ if [[ ! -f "$env_file" ]]; then
 # Must be at least 12 characters. Setting LIVEBOOK_PASSWORD disables token auth.
 export LIVEBOOK_PASSWORD='$pw'
 export LIVEBOOK_TOKEN_ENABLED=false
+
+# Point Mix/Hex at writable dirs on the host instead of the read-only AppImage mount,
+# so Mix.install works in notebooks.
+export MIX_HOME="\$HOME/.mix"
+export MIX_ARCHIVES="\$HOME/.mix/archives"
+export HEX_HOME="\$HOME/.hex"
 EOF
     chmod 600 "$env_file"
     echo "Livebook password: $pw  (saved in $env_file)"
 fi
+
+mkdir -p "$HOME/.mix/archives" "$HOME/.hex"
 
 # Best-effort icon extraction from the AppImage.
 if [[ ! -f "$icon" ]]; then
